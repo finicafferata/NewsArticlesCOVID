@@ -17,6 +17,7 @@ const fetchAndSaveNewsArticles = async () => {
         q: ["covid", "coronavirus"],
     };
     let paramsItems = [];
+
     // Get the news articles
     try {
         const newsArticles = await fetchNewsArticles(options);
@@ -34,16 +35,16 @@ const fetchAndSaveNewsArticles = async () => {
     } catch (error) {
         console.log(error);
     }
+
     // Check if table exists. If it does not exist, create a new one. 
     try {
         const chTable = await checkTable(table);
     } catch (error) {
         console.log(error);
     }
+    
     try {
-        console.log('paramsItemssssss', paramsItems)
         const newArticle = await newItem(paramsItems);
-        console.log('newArticle', newArticle);
     } catch (error) {
         console.log(error);
     }
