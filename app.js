@@ -1,5 +1,5 @@
 'use strict';
-import fetchNewsArticles from "./google/googleApi.js";
+import fetchNewsArticles from "./accessors/google/googleApi.js";
 import checkTable from "./accessors/aws/checkTable.js"
 import newItem from "./accessors/aws/newItem.js"
 import dotenv from 'dotenv';
@@ -17,7 +17,7 @@ const fetchAndSaveNewsArticles = async () => {
 
     const options = {
         apiKey: process.env.GOOGLE_SEARCH_API_KEY,
-        cx: "0e73589d1e148a1b7",
+        cx: process.env.GOOGLE_SEARCH_ENGINE_ID,
         cr: "countryCA",
         dateRestrict: "d2",
         q: ["covid", "coronavirus"],
