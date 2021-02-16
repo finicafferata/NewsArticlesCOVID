@@ -4,7 +4,6 @@ AWS.config.update({ region: "us-east-2" });
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-console.log("Adding a new item...");
 const newItem = (paramsItems) => {
     paramsItems.forEach(element => {
         docClient.put(element, (err, data) => {

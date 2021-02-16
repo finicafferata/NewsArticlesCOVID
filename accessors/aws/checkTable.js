@@ -1,5 +1,4 @@
 import AWS from "aws-sdk";
-import createTable from "./createTable.js"
 AWS.config.update({ region: "us-east-2" });
 var dynamodb = new AWS.DynamoDB();
 
@@ -11,17 +10,14 @@ const checkTable = (tableName) => {
     dynamodb.describeTable(params, (err, data) => {
         if (err) {
             status = "false";
-            console.log(err, err.stack);
+            throw new Error ("Please create a new table by executing 'node accessors/aws/createTable.js' in your console");
         }
         else {
             status = "true";
-            console.log(data);
+            console.log('Table exists', data);
         }
     });
-    if (status === "false") {
-        const crTable = createTable();
-        console.log('createTableResponse', crTable)
-    }
+    return status;
 }
 
 export default checkTable;

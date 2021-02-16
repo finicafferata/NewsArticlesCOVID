@@ -1,14 +1,20 @@
 'use strict';
-import fetchNewsArticles from "./googleSearch.js";
-import checkTable from "./aws/checkTable.js"
-import newItem from "./aws/newItem.js"
-// import createTable from "./aws/createTable.js"
+import fetchNewsArticles from "./google/googleApi.js";
+import checkTable from "./accessors/aws/checkTable.js"
+import newItem from "./accessors/aws/newItem.js"
 import dotenv from 'dotenv';
 dotenv.config();
 
 const table = process.env.NAME_TABLE;
 
 const fetchAndSaveNewsArticles = async () => {
+    // Check if table exists. If it does not exist, it is required to create a new one. 
+    try {
+        const chTable = checkTable(table);
+    } catch (error) {
+        console.error;
+    }
+
     const options = {
         apiKey: process.env.GOOGLE_SEARCH_API_KEY,
         cx: "0e73589d1e148a1b7",
@@ -18,36 +24,32 @@ const fetchAndSaveNewsArticles = async () => {
     };
     let paramsItems = [];
 
+    
     // Get the news articles
     try {
         const newsArticles = await fetchNewsArticles(options);
-        newsArticles.items.forEach((element) => {
+        newsArticles[0].items.forEach((element) => {
             paramsItems.push({
                 TableName: table,
                 Item: {
                     "url": element.link,
                     "title": element.title,
                     "publicationName": element.snippet,
-                    "date": new Date(),
+                    "date": newsArticles[1],
                 }
             })
         });
     } catch (error) {
-        console.log(error);
-    }
-
-    // Check if table exists. If it does not exist, create a new one. 
-    try {
-        const chTable = await checkTable(table);
-    } catch (error) {
-        console.log(error);
+        console.error;
     }
     
+    // Post news articles in database.
     try {
-        const newArticle = await newItem(paramsItems);
+        const newArticle = newItem(paramsItems);
     } catch (error) {
-        console.log(error);
+        console.error;
     }
+    
 }
 
-console.log(fetchAndSaveNewsArticles());
+fetchAndSaveNewsArticles();
